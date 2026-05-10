@@ -27,3 +27,27 @@ bun add @shadospace/editor
 # or
 npm install @shadospace/editor
 ```
+
+## Configuration
+
+The package automatically detects your project structure (with or without a `src` folder) and places files in `components/editor/`. It also references the stylesheet in your global CSS file.
+
+## Usage
+
+After installation, the component files will be copied into your project. You can import and use the editor like this (adjust the path if you use a different alias):
+
+```tsx
+import Editor from "@/components/editor";
+
+export default function Page() {
+  return (
+    <div className="container mx-auto p-6">
+      <Editor />
+    </div>
+  );
+}
+```
+
+## Customization
+
+Since the editor files are copied directly into your project, you can edit them anytime to add new features or change the styling.
