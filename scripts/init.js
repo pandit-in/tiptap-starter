@@ -11,6 +11,35 @@ const targetDir = process.env.INIT_CWD || process.cwd();
 
 console.log(`[tiptap-starter] Initializing in ${targetDir}`);
 
+// Verify that the target directory is a Next.js project with shadcn installed
+const targetPackageJsonPath = path.join(targetDir, 'package.json');
+
+if (!fs.existsSync(targetPackageJsonPath)) {
+  console.error(`[tiptap-starter] Error: package.json not found in ${targetDir}. Please run this in the root of your project.`);
+  process.exit(1);
+}
+
+let pkg;
+try {
+  pkg = JSON.parse(fs.readFileSync(targetPackageJsonPath, 'utf8'));
+} catch (e) {
+  console.error(`[tiptap-starter] Error: Failed to parse package.json in ${targetDir}`);
+  process.exit(1);
+}
+
+const hasNext = pkg.dependencies?.next || pkg.devDependencies?.next;
+const hasShadcn = fs.existsSync(path.join(targetDir, 'components.json'));
+
+if (!hasNext) {
+  console.error(`[tiptap-starter] Error: Next.js is not detected. This package is designed for Next.js projects.`);
+  process.exit(1);
+}
+
+if (!hasShadcn) {
+  console.error(`[tiptap-starter] Error: shadcn/ui is not detected (components.json not found). Please initialize shadcn first.`);
+  process.exit(1);
+}
+
 const sourceEditorDir = path.join(__dirname, '../components/editor');
 
 // Detect if target project uses src directory
