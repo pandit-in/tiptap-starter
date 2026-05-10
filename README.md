@@ -1,21 +1,29 @@
-# Next.js template
+# @shadospace/editor
 
-This is a Next.js template with shadcn/ui.
+A beautiful, feature-rich Tiptap editor scaffolding for Next.js projects using shadcn/ui.
 
-## Adding components
+This is not just a component library; it's a CLI scaffolding tool that places the editor source files directly into your project so you can customize them fully.
 
-To add components to your app, run the following command:
+## Features
+
+- **Tiptap Starter Kit** fully integrated.
+- **Dynamic Menu Bar** with essential formatting tools.
+- **Tailwind CSS** styling pre-configured.
+- **Interactive States** and clean UI.
+
+## Prerequisites
+
+Before installing, ensure your project meets the following requirements:
+
+1. **Next.js** project.
+2. **shadcn/ui** initialized (requires a `components.json` file in the root).
+
+## Installation
+
+Install the package as a dependency. The installation will automatically trigger the setup script.
 
 ```bash
-npx shadcn@latest add button
-```
-
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
+bun add @shadospace/editor
+# or
+npm install @shadospace/editor
 ```
