@@ -4,7 +4,9 @@ import { useEditorState } from "@tiptap/react"
 import { menuBarStateSelector } from "./menubar-state"
 import {
   Bold,
-  Code,
+  ChevronDown,
+  CodeXml,
+  Heading,
   Heading1,
   Heading2,
   Heading3,
@@ -21,6 +23,13 @@ import {
   Undo2,
 } from "lucide-react"
 import { Button } from "../ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
+import { UploadButton } from "@/lib/uploadthing"
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
   const editorState = useEditorState({
@@ -32,41 +41,41 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     <div>
       <div className="overflow-x-auto border bg-card">
         <div className="flex w-max items-center p-2">
-          <Button
-            type="button"
-            variant={"ghost"}
-            size={"icon"}
-            aria-label="Toggle H1"
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            disabled={editorState.isHeading1}
-          >
-            <Heading1 />
-          </Button>
-          <Button
-            type="button"
-            variant={"ghost"}
-            size={"icon"}
-            aria-label="Toggle H2"
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
-            disabled={editorState.isHeading2}
-          >
-            <Heading2 />
-          </Button>
-          <Button
-            type="button"
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() =>
-              editor.chain().focus().toggleHeading({ level: 3 }).run()
-            }
-            disabled={editorState.isHeading3}
-          >
-            <Heading3 />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button type="button" variant={"ghost"} aria-label="Toggle H1">
+                <Heading />
+                <ChevronDown size={0.5} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 1 }).run()
+                }
+              >
+                <Heading1 />
+                Heading 1
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 2 }).run()
+                }
+              >
+                <Heading2 />
+                Heading 2
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 3 }).run()
+                }
+              >
+                <Heading3 />
+                Heading 3
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             type="button"
             variant={"ghost"}
@@ -101,7 +110,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editorState.canCode}
           >
-            <Code />
+            <CodeXml />
           </Button>
           <Button
             type="button"
@@ -140,6 +149,14 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           >
             <SquareCode />
           </Button>
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              res.forEach((item) => {
+                editor.chain().focus().setImage({ src: item.url }).run()
+              })
+            }}
+          />
           <Button
             type="button"
             variant={"ghost"}

@@ -11,6 +11,7 @@ import { authClient } from "@/lib/auth-client"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 const formSchema = z.object({
   email: z.email(),
@@ -52,7 +53,7 @@ export default function SigninPage() {
   }
 
   return (
-    <div className="items flex h-[85vh] flex-col justify-center gap-4">
+    <div className="items flex h-[60vh] flex-col justify-center gap-4">
       <form
         id="signin"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -104,6 +105,41 @@ export default function SigninPage() {
           >
             {isPending ? "Signing in..." : "Sign in"}
           </Button>
+          <Button
+            variant={"outline"}
+            type="button"
+            disabled={isPending}
+            onClick={() => {
+              startTransition(async () => {
+                try {
+                  const { error } = await authClient.signIn.social({
+                    provider: "google",
+                    callbackURL: "/",
+                  })
+
+                  if (error) {
+                    toast.error(error.message)
+                    return
+                  }
+                  toast.success("Signed in successfully")
+                } catch (error) {
+                  console.log(error)
+                  toast.error("Failed to sign in")
+                }
+              })
+            }}
+            className="w-full"
+          >
+            <Image
+              height={4}
+              width={4}
+              src="/google.png"
+              alt="google"
+              className="h-4 w-4"
+            />
+            {isPending ? "Signing in..." : "Sign in with Google"}
+          </Button>
+
           <div className="flex items-center gap-2">
             <p className="text-sm text-muted-foreground">
               Don&apos;t have an account?
