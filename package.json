@@ -1,6 +1,6 @@
 {
   "name": "tiptap-starter",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "postinstall": "bun scripts/init.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
