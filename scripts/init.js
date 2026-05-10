@@ -79,6 +79,21 @@ try {
     }
   });
 
+  // Copy UploadThing setup files
+  const uploadthingFiles = [
+    { src: path.join(__dirname, '../lib/uploadthing.ts'), dest: path.join(baseTargetDir, 'lib/uploadthing.ts') },
+    { src: path.join(__dirname, '../app/api/uploadthing/core.ts'), dest: path.join(baseTargetDir, 'app/api/uploadthing/core.ts') },
+    { src: path.join(__dirname, '../app/api/uploadthing/route.ts'), dest: path.join(baseTargetDir, 'app/api/uploadthing/route.ts') }
+  ];
+
+  uploadthingFiles.forEach(file => {
+    if (fs.existsSync(file.src)) {
+      copyFile(file.src, file.dest);
+    } else {
+      console.error(`[tiptap-starter] Source file missing: ${file.src}`);
+    }
+  });
+
   // Update globals.css
   const possiblePaths = [
     path.join(targetDir, 'app/globals.css'),
