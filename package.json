@@ -17,7 +17,7 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "postinstall": "bun scripts/init.js"
+    "postinstall": "node scripts/init.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
