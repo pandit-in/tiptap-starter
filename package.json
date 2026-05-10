@@ -1,8 +1,15 @@
 {
-  "name": "tiptap-starter",
+  "name": "@shadospace/editor",
   "version": "1.0.0",
   "type": "module",
-  "private": true,
+  "private": false,
+  "files": [
+    "scripts/init.js",
+    "components/editor"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
