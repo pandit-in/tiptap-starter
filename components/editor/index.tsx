@@ -3,7 +3,6 @@ import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
 import { TableKit } from "@tiptap/extension-table"
-import FileHandler from "@tiptap/extension-file-handler"
 import { TextStyleKit } from "@tiptap/extension-text-style"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
 import css from "highlight.js/lib/languages/css"
@@ -37,14 +36,6 @@ export default function Editor({
       Image,
       TableKit,
       CodeBlockLowlight.configure({ lowlight }),
-      FileHandler.configure({
-        allowedMimeTypes: [
-          "image/png",
-          "image/jpeg",
-          "image/gif",
-          "image/webp",
-        ],
-      }),
     ],
     editorProps: {
       attributes: {

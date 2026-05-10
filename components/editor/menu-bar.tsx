@@ -10,6 +10,7 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ImageIcon,
   Italic,
   List,
   ListOrdered,
@@ -30,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { UploadButton } from "@/lib/uploadthing"
+import { toast } from "sonner"
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
   const editorState = useEditorState({
@@ -149,14 +151,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           >
             <SquareCode />
           </Button>
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              res.forEach((item) => {
-                editor.chain().focus().setImage({ src: item.url }).run()
-              })
-            }}
-          />
+
           <Button
             type="button"
             variant={"ghost"}
@@ -166,6 +161,20 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           >
             <Quote />
           </Button>
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              res.forEach((item) => {
+                toast.success("Image uploaded successfully")
+                editor.chain().focus().setImage({ src: item.ufsUrl }).run()
+              })
+            }}
+            onUploadError={(error) => {
+              toast.error(`Upload failed: ${error.message}`)
+            }}
+            className="ml-2 ut-button:h-6 ut-button:w-6 ut-button:bg-card ut-button:outline-none ut-allowed-content:hidden"
+            content={{ button: <ImageIcon className="h-4 w-4" /> }}
+          />
           <Button
             type="button"
             variant={"ghost"}
