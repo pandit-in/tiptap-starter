@@ -105,7 +105,7 @@ export default function PostForm({
                   ) : (
                     <div className="w-full cursor-pointer">
                       <UploadDropzone
-                        className="h-48 w-full border-2 border-red-500/10 hover:border-red-500/20 ut-button:bg-red-500 ut-button:p-3 ut-button:text-sm ut-button:hover:bg-red-500 ut-allowed-content:hidden ut-label:text-sm ut-label:text-muted-foreground ut-upload-icon:size-40"
+                        className="h-48 w-full border-2 border-red-500/20 hover:border-red-500/30 ut-button:bg-red-500 ut-button:p-3 ut-button:text-sm ut-button:hover:bg-red-500 ut-allowed-content:hidden ut-label:text-sm ut-label:text-muted-foreground ut-upload-icon:size-40"
                         endpoint="coverImageUploader"
                         onClientUploadComplete={(res) => {
                           if (res) field.onChange(res[0].ufsUrl)
