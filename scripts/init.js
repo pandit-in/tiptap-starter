@@ -3,6 +3,7 @@
 import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
+import { execSync } from "child_process"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -213,6 +214,35 @@ try {
     console.warn(
       `[tiptap-starter] globals.css not found. Please add \`@import "../components/editor/styles.css";\` manually to your CSS file.`
     )
+  }
+
+  // Install lucide-react if missing
+  console.log("[tiptap-starter] Checking for lucide-react...")
+  
+  let hasLucide = false
+  if (pkg.dependencies?.["lucide-react"] || pkg.devDependencies?.["lucide-react"]) {
+    hasLucide = true
+  }
+
+  if (!hasLucide) {
+    let command = "npm install lucide-react"
+    if (fs.existsSync(path.join(targetDir, "bun.lock"))) {
+      command = "bun add lucide-react"
+    } else if (fs.existsSync(path.join(targetDir, "pnpm-lock.yaml"))) {
+      command = "pnpm add lucide-react"
+    } else if (fs.existsSync(path.join(targetDir, "yarn.lock"))) {
+      command = "yarn add lucide-react"
+    }
+
+    console.log(`[tiptap-starter] Installing lucide-react with command: ${command}`)
+    try {
+      execSync(command, { cwd: targetDir, stdio: "inherit" })
+      console.log("[tiptap-starter] Successfully installed lucide-react")
+    } catch (error) {
+      console.error("[tiptap-starter] Failed to install lucide-react:", error)
+    }
+  } else {
+    console.log("[tiptap-starter] lucide-react is already installed.")
   }
 } catch (error) {
   console.error(`[tiptap-starter] Error during initialization:`, error)
