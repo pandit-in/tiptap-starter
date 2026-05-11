@@ -87,14 +87,82 @@ try {
   })
 
   // Copy UploadThing setup files
-  const uploadthingFiles = [
+  const coreDest = path.join(baseTargetDir, "app/api/uploadthing/core.ts")
+  
+  if (fs.existsSync(coreDest)) {
+    console.log(`[tiptap-starter] ${coreDest} already exists, checking for missing routes.`)
+    let content = fs.readFileSync(coreDest, "utf8")
+    let modified = false
+
+    const hasImageUploader = content.includes("imageUploader")
+    const hasCoverImageUploader = content.includes("coverImageUploader")
+
+    if (!hasImageUploader || !hasCoverImageUploader) {
+      let routesToInsert = ""
+      if (!hasImageUploader) {
+        routesToInsert += `
+  imageUploader: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      const user = await auth(req)
+      if (!user) throw new UploadThingError("Unauthorized")
+      return { userId: user.id }
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for userId:", metadata.userId)
+      console.log("file url", file.ufsUrl)
+      return { uploadedBy: metadata.userId }
+    }),`
+      }
+
+      if (!hasCoverImageUploader) {
+        routesToInsert += `
+  coverImageUploader: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      const user = await auth(req)
+      if (!user) throw new UploadThingError("Unauthorized")
+      return { userId: user.id }
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for userId:", metadata.userId)
+      console.log("file url", file.ufsUrl)
+      return { uploadedBy: metadata.userId }
+    }),`
+      }
+
+      if (content.includes("} satisfies FileRouter")) {
+        content = content.replace("} satisfies FileRouter", routesToInsert + "\n} satisfies FileRouter")
+        modified = true
+      } else {
+        console.warn(`[tiptap-starter] Could not find \`} satisfies FileRouter\` in ${coreDest}. Please add the routes manually.`)
+      }
+    }
+
+    if (modified) {
+      fs.writeFileSync(coreDest, content)
+      console.log(`[tiptap-starter] Inserted missing routes into ${coreDest}`)
+    } else {
+      console.log(`[tiptap-starter] All required routes already present in ${coreDest}`)
+    }
+  } else {
+    // File doesn't exist, copy the default one
+    copyFile(path.join(__dirname, "../app/api/uploadthing/core.ts"), coreDest)
+  }
+
+  // Copy other uploadthing files if they don't exist
+  const otherUploadthingFiles = [
     {
       src: path.join(__dirname, "../lib/uploadthing.ts"),
       dest: path.join(baseTargetDir, "lib/uploadthing.ts"),
-    },
-    {
-      src: path.join(__dirname, "../app/api/uploadthing/core.ts"),
-      dest: path.join(baseTargetDir, "app/api/uploadthing/core.ts"),
     },
     {
       src: path.join(__dirname, "../app/api/uploadthing/route.ts"),
@@ -102,7 +170,7 @@ try {
     },
   ]
 
-  uploadthingFiles.forEach((file) => {
+  otherUploadthingFiles.forEach((file) => {
     if (fs.existsSync(file.src)) {
       copyFile(file.src, file.dest)
     } else {
