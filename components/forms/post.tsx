@@ -5,12 +5,13 @@ import { toast } from "sonner"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "../ui/button"
-import { Sparkles, Upload } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import { useTransition } from "react"
 import { createPost, updatePost } from "@/server/post"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import Editor from "../editor"
+import { UploadDropzone } from "@/lib/uploadthing"
 
 const formSchema = z.object({
   coverImage: z.string().optional(),
@@ -77,23 +78,46 @@ export default function PostForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <div className="mb-6 flex items-center gap-4">
-                {field.value && (
-                  <Image
-                    src={field.value}
-                    alt="Cover image"
-                    width={100}
-                    height={100}
-                  />
-                )}
-                <Button variant={"outline"} size={"lg"}>
-                  <Upload />
-                  Upload Cover Image
-                </Button>
-                <Button variant={"outline"} size={"lg"}>
-                  <Sparkles />
-                  Generate Image
-                </Button>
+              <div className="mb-6 flex flex-col gap-4">
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  {field.value ? (
+                    <div className="relative mt-2 w-full">
+                      <div className="relative w-full">
+                        <Image
+                          src={field.value}
+                          alt="Cover image"
+                          width={1280}
+                          height={720}
+                          className="h-48 w-full rounded-md object-cover"
+                        />
+                      </div>
+                      <Button
+                        variant={"destructive"}
+                        type="button"
+                        size={"icon"}
+                        className="absolute top-2 right-2"
+                        onClick={() => field.onChange("")}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="w-full cursor-pointer">
+                      <UploadDropzone
+                        className="h-48 w-full border-2 border-red-500/10 hover:border-red-500/20 ut-button:bg-red-500 ut-button:p-3 ut-button:text-sm ut-button:hover:bg-red-500 ut-allowed-content:hidden ut-label:text-sm ut-label:text-muted-foreground ut-upload-icon:size-40"
+                        endpoint="coverImageUploader"
+                        onClientUploadComplete={(res) => {
+                          if (res) field.onChange(res[0].ufsUrl)
+                          toast.success("Cover image uploaded successfully")
+                        }}
+                        onUploadError={(error) => {
+                          toast.error(error.message)
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -108,7 +132,7 @@ export default function PostForm({
                 {...field}
                 aria-invalid={fieldState.invalid}
                 placeholder="Post title here"
-                className="mb-6 resize-none overflow-hidden text-3xl font-bold outline-none"
+                className="resize-none overflow-hidden text-3xl font-bold outline-none"
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

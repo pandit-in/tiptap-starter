@@ -31,12 +31,6 @@ export default function Header() {
             <div className="flex items-center space-x-2">
               <Button
                 variant={"secondary"}
-                onClick={() => router.push("/simple")}
-              >
-                Simple
-              </Button>
-              <Button
-                variant={"secondary"}
                 onClick={() => router.push("/create")}
               >
                 New post

@@ -1,10 +1,6 @@
 import type { Editor } from "@tiptap/core"
 import type { EditorStateSnapshot } from "@tiptap/react"
 
-/**
- * State selector for the MenuBar component.
- * Extracts the relevant editor state for rendering menu buttons.
- */
 export function menuBarStateSelector(ctx: EditorStateSnapshot<Editor>) {
   return {
     // Text formatting
@@ -26,6 +22,15 @@ export function menuBarStateSelector(ctx: EditorStateSnapshot<Editor>) {
     isHeading4: ctx.editor.isActive("heading", { level: 4 }) ?? false,
     isHeading5: ctx.editor.isActive("heading", { level: 5 }) ?? false,
     isHeading6: ctx.editor.isActive("heading", { level: 6 }) ?? false,
+
+    // others
+    href: ctx.editor.isActive("link")
+      ? ctx.editor.getAttributes("link").href
+      : "",
+
+    image: ctx.editor.isActive("image")
+      ? ctx.editor.getAttributes("image").src
+      : "",
 
     // Lists and blocks
     isBulletList: ctx.editor.isActive("bulletList") ?? false,

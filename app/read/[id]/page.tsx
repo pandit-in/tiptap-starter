@@ -41,11 +41,16 @@ export default async function Page({
         )}
       </div>
       {post?.coverImage && (
-        <div className="relative mb-10 h-64">
-          <Image src={post?.coverImage} alt="Cover image" fill />
+        <div className="relative mb-10 w-full">
+          <Image
+            src={post?.coverImage}
+            alt="Cover image"
+            width={1280}
+            height={720}
+            className="h-48 w-full object-cover"
+          />
         </div>
       )}
-      <Editor content={post?.content} readonly />
       <div>
         <Editor readonly content={post?.content} />
       </div>

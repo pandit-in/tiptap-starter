@@ -12,6 +12,7 @@ import {
   Heading3,
   ImageIcon,
   Italic,
+  Link,
   List,
   ListOrdered,
   Minus,
@@ -30,8 +31,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { UploadButton } from "@/lib/uploadthing"
+import { UploadDropzone } from "@/lib/uploadthing"
 import { toast } from "sonner"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "../ui/label"
+import { Input } from "../ui/input"
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
   const editorState = useEditorState({
@@ -151,7 +164,59 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           >
             <SquareCode />
           </Button>
-
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button" variant={"ghost"} size={"icon"}>
+                <Link />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Set Link</DialogTitle>
+                <DialogDescription>
+                  Set the link in full URL like https://example.com
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col gap-4">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link-url">Link URL</Label>
+                  <Input
+                    placeholder="https://example.com"
+                    id="link-url"
+                    onChange={(e) =>
+                      editor
+                        .chain()
+                        .focus()
+                        .setLink({ href: e.target.value })
+                        .run()
+                    }
+                    value={editorState.href || ""}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    onClick={() =>
+                      editor
+                        .chain()
+                        .focus()
+                        .setLink({ href: editorState.href })
+                        .run()
+                    }
+                  >
+                    Set Link
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button
             type="button"
             variant={"ghost"}
@@ -161,20 +226,62 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           >
             <Quote />
           </Button>
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              res.forEach((item) => {
-                toast.success("Image uploaded successfully")
-                editor.chain().focus().setImage({ src: item.ufsUrl }).run()
-              })
-            }}
-            onUploadError={(error) => {
-              toast.error(`Upload failed: ${error.message}`)
-            }}
-            className="ml-2 ut-button:h-6 ut-button:w-6 ut-button:bg-card ut-button:outline-none ut-allowed-content:hidden"
-            content={{ button: <ImageIcon className="h-4 w-4" /> }}
-          />
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button" variant={"ghost"} size={"icon"}>
+                <ImageIcon />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Set Image</DialogTitle>
+                <DialogDescription>
+                  Upload your image or provide a link.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col gap-4">
+                <div className="grid flex-1 gap-2">
+                  <Input
+                    placeholder="https://example.com"
+                    id="image-url"
+                    onChange={(e) =>
+                      editor
+                        .chain()
+                        .focus()
+                        .setImage({ src: e.target.value })
+                        .run()
+                    }
+                    value={editorState.image.src || ""}
+                  />
+                </div>
+                <div className="w-full cursor-pointer">
+                  <UploadDropzone
+                    className="h-48 w-full border-2 border-red-500/20 hover:border-red-500/30 ut-button:bg-red-500 ut-button:p-3 ut-button:text-sm ut-button:hover:bg-red-500 ut-allowed-content:hidden ut-label:text-sm ut-label:text-muted-foreground ut-upload-icon:size-40"
+                    endpoint="imageUploader"
+                    onClientUploadComplete={(res) => {
+                      res.forEach((item) => {
+                        toast.success("Image uploaded successfully")
+                        editor
+                          .chain()
+                          .focus()
+                          .setImage({ src: item.ufsUrl })
+                          .run()
+                      })
+                    }}
+                    onUploadError={(error) => {
+                      toast.error(`Upload failed: ${error.message}`)
+                    }}
+                  />
+                </div>
+              </div>
+              <DialogFooter className="justify-end">
+                <DialogClose asChild>
+                  <Button type="button">Insert Image</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button
             type="button"
             variant={"ghost"}
