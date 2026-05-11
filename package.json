@@ -1,8 +1,9 @@
 {
   "name": "@shadospace/editor",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "module",
   "private": false,
+  "bin": "./scripts/init.js",
   "files": [
     "scripts/init.js",
     "components/editor",
@@ -18,8 +19,7 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "node scripts/init.js"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
